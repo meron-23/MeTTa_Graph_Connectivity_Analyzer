@@ -1,0 +1,14 @@
+# Core Requirements
+flask==2.3.2
+networkx==3.1
+matplotlib==3.7.2
+pyvis==0.3.2
+
+# Development/Additional Tools
+python-dotenv==1.0.0
+pytest==7.4.0
+black==23.7.0
+flake8==6.0.0
+
+# Optional (for enhanced visualization)
+plotly==5.15.0
