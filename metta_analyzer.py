@@ -125,47 +125,54 @@ class MeTTaGraphAnalyzer:
         return report
     
     def visualize_graph(self, filename):
-        fig = plt.figure(figsize=(14, 12))  # Larger figure size
+        plt.figure(figsize=(16, 14))
+        
         try:
-            # Improved layout parameters
-            pos = nx.spring_layout(self.graph, 
-                                k=0.7,          # Increased optimal distance
-                                iterations=100,  # More iterations for better layout
-                                seed=42)        # Fixed seed for consistency
+            # Create directed graph
+            G = nx.DiGraph()
+            G.add_edges_from(self.graph.edges(data=True))
             
-            # Draw with adjusted parameters
-            nx.draw_networkx_nodes(self.graph, pos, 
-                                node_size=1200,  # Larger nodes
-                                node_color='lightblue',
-                                alpha=0.9)
+            # Use spring layout
+            pos = nx.spring_layout(G, k=0.5, iterations=200, seed=42)
             
-            nx.draw_networkx_edges(self.graph, pos, 
-                                width=2, 
-                                alpha=0.6,
-                                edge_color='gray')
+            # Draw edges with simple arrows
+            nx.draw_networkx_edges(
+                G, pos,
+                arrowstyle='-|>',  # Simple arrowhead
+                arrowsize=15,      # Perfect arrowhead size
+                width=1.5,
+                edge_color='#555555',
+                node_size=1800,    # Must match node size
+                min_source_margin=15,  # Space from source
+                min_target_margin=15,  # Space from target
+                ax=plt.gca()
+            )
             
-            # Improved label drawing
-            nx.draw_networkx_labels(self.graph, pos, 
-                                font_size=9,
-                                font_weight='bold',
-                                bbox=dict(facecolor='white', alpha=0.7, edgecolor='none'))
+            # Draw nodes
+            nx.draw_networkx_nodes(
+                G, pos,
+                node_size=1800,
+                node_color='lightblue',
+                alpha=0.8,
+                edgecolors='darkblue',
+                linewidths=2,
+                ax=plt.gca()
+            )
             
-            # Edge labels with better formatting
-            edge_labels = {(u, v): d['predicate'] 
-                        for u, v, d in self.graph.edges(data=True)}
-            nx.draw_networkx_edge_labels(self.graph, pos,
-                                    edge_labels=edge_labels,
-                                    font_size=8,
-                                    bbox=dict(facecolor='white', alpha=0.7))
+            # Draw labels
+            nx.draw_networkx_labels(
+                G, pos,
+                font_size=10,
+                bbox=dict(facecolor='white', alpha=0.7, boxstyle='round,pad=0.3'),
+                ax=plt.gca()
+            )
             
-            plt.title("MeTTa Graph Connectivity", size=16, pad=20)
+            plt.title("MeTTa Graph Connectivity", size=18, pad=20)
             plt.axis('off')
-            
-            # Add some padding around the graph
-            plt.tight_layout(pad=3.0)
+            plt.tight_layout()
             plt.savefig(filename, dpi=300, bbox_inches='tight')
         finally:
-            plt.close(fig)
+            plt.close()
 # Web Application Interface
 HTML_TEMPLATE = """
 <!DOCTYPE html>
